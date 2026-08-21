@@ -13,8 +13,8 @@ phases:
     name_en: Static UI discovery
     name_ko: 정적 UI 조사
   - id: G4-LIFECYCLE-MAP
-    name_en: Whole-game lifecycle map
-    name_ko: 게임 전체 수명주기 지도
+    name_en: Rolling slice dependency map
+    name_ko: 슬라이스별 점진적 의존성 지도
   - id: G5-RUNTIME-COVERAGE
     name_en: Runtime owner and control coverage
     name_ko: 런타임 소유자와 컨트롤 커버리지
@@ -61,6 +61,6 @@ privacyClasses:
   - unknown
 
 verdicts:
-  - PROCEED
-  - PROCEED WITH TODOs
-  - DO NOT PROCEED
+  - READY FOR RUNTIME PROBE
+  - READY FOR SLICE IMPLEMENTATION
+  - BLOCKED FOR THIS SLICE

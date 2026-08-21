@@ -120,16 +120,18 @@ A checkpoint report should be concise:
 work slice closed
 checks run and observed results
 automatic repairs made
-current verdict
+current Code QA status
 remaining guarded TODOs
 one user decision, only if required
 actions not performed
 ```
 
-Verdicts:
+Code QA statuses:
 
-- `PROCEED`: current gates close.
-- `PROCEED WITH TODOs`: remaining findings are guarded and trigger-bound.
-- `DO NOT PROCEED`: unresolved blocker needs scope expansion, product decision, real acceptance or external effect.
+- `PASS`: no current QA blocker.
+- `PASS-WITH-TODOS`: remaining findings are guarded and trigger-bound.
+- `BLOCKED`: an unresolved QA blocker needs repair, scope expansion, product decision, real acceptance, or an external effect.
+
+This status describes code and artifact quality. It does not prove that the agent's game interpretation is true and does not replace the slice decision in `first-slice-readiness.schema.json`.
 
 A QA checkpoint is not authorization for broad refactoring, commit, push, PR, release, deployment or publication. It improves execution quality inside the user's existing authorization.

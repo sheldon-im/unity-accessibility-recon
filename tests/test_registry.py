@@ -52,6 +52,11 @@ def test_canonical_registry_exposes_distinct_taxonomies() -> None:
         "proprietary",
         "unknown",
     )
+    assert registry.verdicts == (
+        "READY FOR RUNTIME PROBE",
+        "READY FOR SLICE IMPLEMENTATION",
+        "BLOCKED FOR THIS SLICE",
+    )
 
 
 def test_registry_matches_manifest_and_persistent_schemas() -> None:

@@ -83,6 +83,15 @@ def _assess_readiness(args: argparse.Namespace) -> int:
                     f"readiness gaps={readiness_gap_ids!r}, ledger gaps={ledger_report.gap_ids!r}",
                 )
             )
+        in_scope = set(readiness["scope"]["inScopeSurfaceIds"])
+        missing_surfaces = tuple(sorted(in_scope - set(ledger_report.surface_ids)))
+        if missing_surfaces:
+            ledger_issues.append(
+                ValidationIssue(
+                    "SCOPE_SURFACE_NOT_IN_LEDGER",
+                    f"in-scope surfaces missing from ledgers: {missing_surfaces!r}",
+                )
+            )
     if ledger_issues:
         return _print_issues(ledger_issues)
     report = assess_first_slice(
@@ -94,12 +103,25 @@ def _assess_readiness(args: argparse.Namespace) -> int:
     if args.json:
         print(json.dumps(report.as_dict(), ensure_ascii=False, indent=2, sort_keys=True))
     else:
-        print(f"READINESS_VERDICT {report.verdict}")
+        print(f"CONSISTENCY_CHECK {report.consistency_check}")
+        print(f"DECISION {report.decision}")
+        print(f"validatorScope={report.validator_scope}")
         print(f"buildFingerprintId={report.build_fingerprint_id}")
         print(f"sliceId={report.slice_id}")
+        print(f"playerGoal={report.player_goal}")
+        print(f"inScopeSurfaceIds={'|'.join(report.in_scope_surface_ids)}")
+        for finding in report.offline_findings:
+            print(f"offlineFinding={finding}")
+        for finding in report.runtime_findings:
+            print(f"runtimeFinding={finding}")
+        for unknown in report.unknowns:
+            print(f"unknown={unknown}")
+        print(f"nextTest={report.next_test}")
         for reason in report.reasons:
             print(f"reason={reason}")
-    return 1 if report.verdict == "DO NOT PROCEED" else 0
+        for limit in report.limits:
+            print(f"limit={limit}")
+    return 1 if report.decision == "BLOCKED FOR THIS SLICE" else 0
 
 
 def _validate_ledgers(args: argparse.Namespace) -> int:
@@ -168,7 +190,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     readiness = subparsers.add_parser(
         "assess-readiness",
-        help="Compute the first accessibility slice verdict",
+        help="Compute a slice-scoped consistency decision and next runtime test",
     )
     readiness.add_argument("--build", required=True, type=Path)
     readiness.add_argument("--source", required=True, type=Path)

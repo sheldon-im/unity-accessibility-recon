@@ -18,21 +18,13 @@
 
 global enumeration은 diagnostic census에는 사용할 수 있지만 player-facing eligibility rule이 아닙니다.
 
-## UI-FAMILIES — 첫 slice 선택 전에 게임 전체 포함
+## UI-FAMILIES — 현재 slice의 dependency path 추적
 
-새 default profile에서 바로 도달하는 screen만이 아니라 family를 inventory합니다. 최소한 다음을 고려합니다.
+하나의 player goal에서 시작해 해당 경로에 진입하고, 완료하고, 취소하고, 실패하고, 원래 상태로 복원하는 데 필요한 surface만 inventory합니다. static evidence나 runtime observation에서 현재 slice에 영향을 줄 수 있음이 드러난 경우에만 인접 modal·conditional surface를 포함합니다.
 
-1. boot, seizure/accessibility warning, consent, language, title
-2. account, cloud conflict, save/profile/load, new game와 difficulty
-3. options, audio, controls, rebind, text input과 confirmation dialog
-4. single/multiplayer, lobby, invite, room code와 network error
-5. HUD, status, notification, tooltip, tutorial, quest와 dialogue
-6. pause, death, retry, result, ending과 credits
-7. inventory/grid, item detail, drag/drop, equipment, crafting, shop과 construction
-8. map, scanner, navigation, target/unit/incident selection, world-space UI와 interaction
-9. 게임 고유 hazard, timing prompt, combat telegraph, progression/DLC와 conditional content
+나머지 family는 짧은 out-of-scope 목록에 둡니다. options, save, multiplayer, HUD, inventory, map, ending, DLC 또는 game-specific system이 존재할 수 있다는 이유만으로 열거하지 않습니다. 선택한 feature, implementation finding 또는 live test에서 관련성이 드러날 때 dependency map으로 승격합니다.
 
-접근할 수 없거나 도달하지 못한 조건에는 dependency와 제한된 미래 observation plan을 기록합니다. 조용히 누락하지 않습니다.
+현재 slice 안에서 접근할 수 없거나 도달하지 못한 조건에는 dependency와 가장 작은 미래 observation plan을 기록합니다. 해당 unknown을 조용히 누락하지 않습니다.
 
 ## UI-OWNERSHIP — 현재 state owner 명명
 
@@ -144,7 +136,7 @@ family는 다음 조건에서만 `COVERAGE-CLOSED`입니다.
 7. 사용자가 확인한 경우에만 manual NVDA claim 존재
 8. 남은 gap에 재현 조건과 re-open trigger 존재
 
-게임 전체 lifecycle mapping이 완료됐어도 implementation coverage는 partial일 수 있습니다. 두 verdict를 분리합니다.
+slice lifecycle mapping이 충분해도 나머지 게임은 의도적으로 unknown일 수 있습니다. `COVERAGE-CLOSED`는 이름 붙인 surface와 evidence envelope에만 적용되며 게임 전체 verdict가 아닙니다.
 
 ## UI-REOPEN — 광범위한 재조사 방지
 

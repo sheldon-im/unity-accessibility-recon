@@ -2,40 +2,43 @@
 
 [한국어](README.ko.md)
 
-Plan a Unity accessibility mod before you start coding.
+Plan and test one small Unity accessibility-mod slice at a time.
 
-This project helps a blind player and an AI agent study a Unity game in a consistent way. It records which game files were collected, maps the game's screens and controls, and shows what still needs live testing.
+This project provides a bilingual, agent-neutral workflow for people who build Unity accessibility mods with AI agents. It helps the user and agent agree on the next player goal, inspect only the game systems that can affect that goal, record what is still unknown, and define the smallest useful live test.
 
-The goal is to collect enough reliable information at the start. This reduces the chance that a blind user must return to visual UI investigation after implementation has begun.
+The goal is to reduce late UI re-investigation without turning the start of a project into a whole-game dump or UI census. Reconnaissance grows when implementation or live testing reveals a real dependency.
 
 ## Who this is for
 
 This project is for:
 
-- blind players who are making a Unity accessibility mod with an AI agent;
+- people making a Unity accessibility mod with an AI agent, including nonvisual and screen-reader-led workflows;
 - accessibility mod authors who need a repeatable investigation process;
-- teams that want clear evidence before they start changing game code.
+- teams that want evidence and explicit unknowns before changing game code.
 
-You do not need to understand every schema or command. The agent can manage the technical records and checks. The user still decides the product goal, the scope, and whether the result works with a real screen reader and keyboard.
+You do not need to understand every schema or command. The agent can manage technical records and checks. The user still chooses the player goal and scope, reviews the plain-language result, and decides whether the feature works with a real screen reader and keyboard.
 
 ## What it does
 
-The workflow helps an agent:
+For each small player-facing slice, the workflow helps an agent:
 
-1. identify the exact game build;
-2. preserve the original files and check what the dump contains;
-3. list the game's screens, controls, menus, pop-ups, and state changes;
-4. separate facts found in files from behavior observed in the running game;
-5. track missing information instead of hiding it;
-6. decide whether the first accessibility feature is ready to implement.
+1. identify the exact game build and preserve the minimum source baseline;
+2. state the player goal and the UI surfaces that are in and out of scope;
+3. inspect only the code, assets, screens, controls, and transitions that can affect that slice;
+4. separate offline findings from behavior observed in the running game;
+5. attach a challenge test to important offline assumptions;
+6. report unknowns and the next live test in plain language;
+7. decide whether the slice is ready for a runtime probe, implementation, or neither.
 
-If required evidence is missing, the validator returns `DO NOT PROCEED` instead of guessing.
+An unrelated extraction failure does not block every feature. A missing dependency that can affect the current slice returns `BLOCKED FOR THIS SLICE` instead of being hidden.
 
 ## What it does not do
 
 This package does not make a game accessible by itself. It is not a game mod, mod loader, automatic player, or screen reader.
 
-It also does not prove that a control works just because the control exists in a file. Live game behavior, physical keyboard input, speech output, and NVDA use require separate evidence.
+The validator is marked `INTERNAL-CONSISTENCY-ONLY`. It checks whether the records agree with each other; it does not prove that the agent's claims are true in the live game. Static evidence cannot replace runtime observation, physical keyboard input, speech output, or manual NVDA acceptance.
+
+It also does not require a complete map of every menu before useful implementation can begin. Decisions apply only to the named slice.
 
 ## What is included
 
@@ -50,20 +53,21 @@ The repository contains:
 
 ## Plain-language terms
 
-- **Reconnaissance** means collecting and checking information before implementation.
+- **Reconnaissance** means answering the questions needed for the next small feature, then expanding the map only when evidence requires it.
 - **Build-bound** means that a record belongs to one exact game version. Evidence from different versions must not be mixed.
 - A **dump** is a structured copy or report made from game code, assets, scenes, prefabs, or localization files.
 - **Static evidence** comes from files. **Runtime evidence** comes from observing the running game.
 - A **ledger** is a structured list of screens, controls, evidence, or open gaps.
-- `claimGrade` says how strong a fact is. `coverageGate` says how far a UI screen has moved through the investigation process.
-- **Fail closed** means stopping when important evidence is missing instead of assuming that everything works.
+- `claimGrade` says how strong a finding is. `coverageGate` says how far an in-scope UI surface has moved through the investigation process.
+- A **challenge test** is a small live test that could show an offline assumption is wrong. `challengedClaimIds` states exactly which claims a runtime probe tests.
+- **Consistency-only validation** means checking the record structure without claiming that the game itself has been proven.
 
 The official phase IDs, claim grades, coverage gates, privacy classes, and verdicts are in `shared/phase-ids.yaml`.
 
 ## How the work is shared
 
-1. The agent collects files, studies the game structure, keeps the records, runs checks, and fixes clear local problems within the approved scope.
-2. The user decides the product direction, scope changes, access to sensitive data, acceptance with a real screen reader and keyboard, and any accepted blockers.
+1. The agent collects the minimum needed files, studies the current slice, keeps the records, runs checks, and fixes clear local problems within the approved scope.
+2. The user chooses the player goal, reviews scope changes and plain-language findings, controls sensitive access, and performs or directs acceptance with a real screen reader and keyboard.
 3. Permission to inspect, edit, test, build, or make a local commit does not give permission to launch a game, install a loader, push, publish, release, or deploy.
 
 ## Start here
@@ -98,7 +102,7 @@ uv run uar validate-ledgers \
   --gaps GAPS.csv
 ```
 
-Ask whether the first accessibility feature is ready to implement:
+Assess the next accessibility slice:
 
 ```bash
 uv run uar assess-readiness \
@@ -113,7 +117,7 @@ uv run uar assess-readiness \
   --json
 ```
 
-Possible results are `PROCEED`, `PROCEED WITH TODOs`, and `DO NOT PROCEED`. The command exits with a nonzero status for `DO NOT PROCEED`.
+Possible decisions are `READY FOR RUNTIME PROBE`, `READY FOR SLICE IMPLEMENTATION`, and `BLOCKED FOR THIS SLICE`. The command exits with a nonzero status only for `BLOCKED FOR THIS SLICE`. Without `--json`, it prints the player goal, offline findings, runtime findings, unknowns, limits, and next test.
 
 ## Export the skills
 
@@ -127,7 +131,7 @@ Each exported folder includes its skill, references, contracts, templates, share
 
 ## Verification status
 
-Version `0.2.0` passed 55 automated tests. The package was also built and installed in a clean Windows 11 environment with Python 3.11.9. The installed wheel produced the expected `PROCEED` and `DO NOT PROCEED` results and exported both language versions correctly.
+Version `0.3.0` is a development candidate. Its progressive-slice contracts, consistency-only validator, bilingual parity, CLI output, and package build are checked by the repository test suite. The previous `0.2.0` wheel passed a clean Windows 11 installation test; the changed `0.3.0` behavior still needs a new Windows-native smoke test before release.
 
 No raw game files or private runtime logs are tracked. See `CODE-QA.md` for the detailed quality record and remaining unverified areas.
 

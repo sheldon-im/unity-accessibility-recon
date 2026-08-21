@@ -1,7 +1,7 @@
 ---
 name: unity-accessibility-reconnaissance-en
 description: Use when starting a Unity screen-reader accessibility mod.
-version: 0.2.0
+version: 0.3.0
 language: en
 license: MIT
 ---
@@ -10,7 +10,7 @@ license: MIT
 
 ## POLICY-AGENT-NEUTRAL — Core contract
 
-Use this skill before implementing the first player-facing slice of a Unity screen-reader accessibility mod. It establishes a build-bound source baseline, reconciles static extraction, maps the whole game's UI lifecycle, and defines the runtime evidence needed to avoid late, broad UI re-investigation.
+Use this skill to investigate the next small, player-meaningful slice of a Unity screen-reader accessibility mod. Establish the minimum build and preservation baseline, inspect only the dependencies that can change that slice, and turn important offline assumptions into small runtime tests. Expand the evidence map when implementation or live testing reveals a real dependency; do not require a whole-game census before useful work begins.
 
 The procedure is agent-neutral. Tool adapters may map capabilities such as file inventory, hashing, managed-code inspection, Unity asset reading, runtime observation, native-input delivery, and speech dispatch. They may not change claim grades, coverage gates, schemas, or authorization boundaries. Canonical phase IDs, `claimGrade`, `coverageGate`, privacy classes, and verdicts are defined in `shared/phase-ids.yaml` or an exported skill's `references/phase-ids.yaml`.
 
@@ -52,7 +52,7 @@ Record:
 - separately authorized runtime actions;
 - current commit and external-effect permissions.
 
-Verdict: `PROCEED`, `PROCEED WITH TODOs`, or `DO NOT PROCEED`.
+Authorization status is `CLOSED` or `BLOCKED`. It is not an implementation-readiness claim.
 
 ## G1-BASELINE — Freeze the build and source identity
 
@@ -70,7 +70,9 @@ Use repository `shared/contracts/source-manifest.schema.json`; exported skills u
 
 ## G2-EXTRACTION — Reconcile the original-source extraction
 
-Declare the extractor scope before running tools. A useful Unity baseline normally considers:
+Declare the question, source families, and investigation budget before running extraction tools. Start with the smallest source set needed for the named slice. Expand only when a finding or runtime test exposes a dependency. A broader diagnostic census is optional and must not become a default entry gate.
+
+Possible source families, when relevant, include:
 
 - player executable and Unity player/runtime identity;
 - Mono assemblies or IL2CPP binary plus metadata;
@@ -81,7 +83,7 @@ Declare the extractor scope before running tools. A useful Unity baseline normal
 - managed types, methods, inheritance, serialized callbacks, and dynamic/reflection/instantiate hints;
 - mutable saves, profiles, settings, cloud roots, and logs as protected inventory, not tracked fixtures.
 
-Count success, exclusion, unsupported, parser failure, and unresolved items. A large dump is not a complete dump unless source counts reconcile and failures are named.
+Count success, exclusion, unsupported, parser failure, and unresolved items inside the declared scope. A large dump is not a complete dump, and a complete dump is not automatically useful. Stop extraction when the current question can be tested honestly.
 
 ### ART-EXTRACTION-COVERAGE — Extraction coverage
 
@@ -91,33 +93,30 @@ Use repository `shared/contracts/extraction-coverage.schema.json`; exported skil
 
 ## G3-STATIC-DISCOVERY — Build the UI discovery set
 
-Create ledgers for UI elements, interactable candidates, localization links, callbacks, and input actions. Preserve source evidence and confidence; do not flatten them into one player-facing list.
+Create ledgers for UI elements, interactable candidates, localization links, callbacks, and input actions that affect the current slice. Preserve source evidence and confidence; do not flatten them into one player-facing list or search unrelated surfaces merely to fill a ledger.
 
-Include inactive templates, pooled objects, dynamic-generation hints, pointer-only candidates, and unresolved script types so omissions remain visible. Label them as discovery evidence, not active runtime controls.
+Within the selected evidence envelope, include inactive templates, pooled objects, dynamic-generation hints, pointer-only candidates, and unresolved script types so relevant omissions remain visible. Label them as discovery evidence, not active runtime controls.
 
 ### ART-STATIC-UI-LEDGER — Static UI ledger
 
 Each record follows `references/contracts/static-ui-ledger.schema.json`. The artifact MUST carry the foundation bundle's `buildFingerprintId`; start from `templates/static-ui-ledger.json`.
 
-Every discovered candidate must become a semantic candidate, explicit exclusion, or gap. A control's existence does not prove visibility, focus, keyboard action, or task completion.
+Every in-scope candidate must become a semantic candidate, explicit exclusion, or gap. A control's existence does not prove visibility, focus, keyboard action, or task completion.
 
-## G4-LIFECYCLE-MAP — Map the whole-game surface lifecycle
+## G4-LIFECYCLE-MAP — Grow a slice dependency map
 
-Before the first feature slice, enumerate player-meaningful surface families across the game:
+Start from one player goal. Map only:
 
-- startup warnings, consent, language, title, and account/cloud conflict;
-- options, rebind, save/load/profile, and multiplayer/lobby;
-- HUD, notifications, dialogue, quest, tutorial, pause, death, result, ending, and credits;
-- inventory/grid, shop, crafting, construction, map/scanner/navigation;
-- game-specific live gameplay, status, hazard, target, unit, or world-interaction surfaces.
+- the entry path and intended completion state;
+- surfaces directly used by the slice;
+- adjacent modal, error, cancel, and restoration paths that can invalidate it;
+- conditional dependencies already shown by static evidence or a runtime probe.
 
-For each family, record entry/exit predicates, runtime owner candidates, modal depth, required/optional controls, initial focus, child transitions, parent restoration, specialized interaction model, privacy class, and conditional content.
+Record unrelated families in a short out-of-scope list with a reason. Do not inspect them in detail until they enter a selected slice. For each in-scope surface, record entry/exit predicates, runtime owner candidates, modal depth, required/optional controls, initial focus, child transitions, parent restoration, specialized interaction model, privacy class, and conditional content.
 
 ### ART-SURFACE-LIFECYCLE-MATRIX — Surface lifecycle matrix
 
-Use `templates/surface-lifecycle-matrix.csv` with a screen-reader-friendly companion. Every row MUST use the static UI ledger and foundation bundle's `buildFingerprintId`; unknown required ownership blocks generic implementation.
-
-The matrix is a coverage map, not a promise to implement every surface in the first release.
+Use `templates/surface-lifecycle-matrix.csv` with a screen-reader-friendly companion. Every row MUST use the static UI ledger and foundation bundle's `buildFingerprintId`; unknown required ownership blocks only the affected slice. The matrix is a rolling dependency map, not a whole-game completion claim.
 
 ## G5-RUNTIME-COVERAGE — Observe active owners and controls
 
@@ -127,7 +126,7 @@ Model surface generations. Enter only after owner and semantic values stabilize;
 
 ### ART-RUNTIME-COVERAGE — Static-to-runtime coverage ledger
 
-For every surface family, advance only through supported gates:
+For every in-scope surface, advance only through supported gates:
 
 ```text
 STATIC-MAPPED
@@ -158,14 +157,15 @@ Classify each action as native-proven, native-partial, pointer-only-proven, fall
 
 Choose the smallest user-meaningful path that exercises real ownership, semantic labeling, native input, postcondition, speech, and lifecycle restoration. Startup modal plus main title is often safer than a generic all-screen cursor, but use the game's actual dependency graph.
 
-A first slice may start only when:
+A slice may move to its next test or implementation step only when:
 
 1. G0 and G1 are closed.
-2. G2 is `DUMP-READY` or bounded `DUMP-PARTIAL` with no blocker for the slice.
-3. G3 and G4 cover the whole-game discovery and surface families at declared confidence.
-4. Required runtime owner/input unknowns for the slice are explicitly testable.
-5. privacy, deployment rollback, and game/profile preservation are defined.
-6. agent-owned work, commit, verification, and Code QA gates are recorded.
+2. G2 covers the source families needed by this slice; unrelated extraction failures do not block it.
+3. G3 and G4 cover the named in-scope surfaces and immediate dependencies at declared confidence.
+4. Every important offline assumption has a small runtime challenge test.
+5. The runtime probe names its `challengedClaimIds`; a passed probe links each target to runtime-grade evidence from that probe.
+6. privacy, deployment rollback, and game/profile preservation are defined.
+7. agent-owned work, commit, verification, and Code QA gates are recorded.
 
 ### ART-GAP-LEDGER — Gap ledger
 
@@ -173,15 +173,30 @@ Each gap needs a stable ID, affected build/surface, `claimGrade`, user impact, c
 
 ### ART-FIRST-SLICE-READINESS — Readiness record
 
-The record names the slice, required artifacts, applicable gaps, QA verdict, authorization boundary, and one of:
+The schema version 2 record names one player goal, in-scope surfaces, out-of-scope areas, claims, gaps, runtime probe, Code QA status, and authorization boundary. It MUST declare `validationScope: INTERNAL-CONSISTENCY-ONLY` and one slice-scoped decision:
 
-- `PROCEED`: all entry gates are satisfied.
-- `PROCEED WITH TODOs`: nonblocking gaps have explicit guards and re-open triggers.
-- `DO NOT PROCEED`: a foundational assumption, first-slice blocker, preservation failure, or mixed-build condition remains.
+- `READY FOR RUNTIME PROBE`: the records are consistent and the next falsification test is defined; offline findings are not runtime truth.
+- `READY FOR SLICE IMPLEMENTATION`: a recorded runtime probe passed, every challenged claim is `RUNTIME-OBSERVED` or stronger, and each target shares evidence with that probe.
+- `BLOCKED FOR THIS SLICE`: a mixed build, preservation failure, applicable blocker, failed probe, or inconsistent record remains.
+
+These decisions apply only to the named slice. They never prove whole-game coverage or manual NVDA acceptance.
 
 ## CHECK-EVIDENCE-SEPARATION — Claim audit
 
-Before reporting, map every claim to its actual grade. Build, schema validation, callback invocation, speech return code, and a successful agent-driven sequence must not be described as manual keyboard/NVDA acceptance.
+Before reporting, map every claim to its actual grade. Build, schema validation, callback invocation, speech return code, and a successful agent-driven sequence must not be described as manual keyboard/NVDA acceptance. Every `SOURCE-IDENTIFIED`, `STATIC-CONFIRMED`, or `OPEN / DYNAMIC-UNVERIFIED` slice claim needs a concrete challenge test.
+
+## CHECK-TRANSPARENCY — Prevent agent self-validation
+
+The validator checks contract shape, build binding, probe-to-claim evidence links, references, and internal consistency. It cannot prove that an agent interpreted the game correctly. Never report `VALIDATION_PASS` as truth about live gameplay.
+
+Give the user a short plain-language view containing:
+
+1. the current player goal and in-scope surfaces;
+2. findings supported only by files;
+3. findings observed in the running game;
+4. applicable unknowns and blockers;
+5. the next test and what failure would mean;
+6. the explicit limits of the validator.
 
 ## CHECK-USER-ROLE — Blind-user burden audit
 
@@ -191,17 +206,19 @@ Confirm that the agent did not ask the blind user to visually enumerate screens,
 
 At each gate report:
 
-1. artifacts created and their build identity;
-2. evidence collected and exact checks run;
-3. gaps closed and remaining blockers;
-4. automatic repairs and QA verdict;
-5. next authorized local slice;
+1. the named player goal and exact slice boundary;
+2. offline findings, runtime findings, assumptions, and unknowns as separate groups;
+3. the smallest next test and its failure meaning;
+4. contract checks run, described as consistency checks only;
+5. automatic repairs and Code QA status;
 6. only the smallest user decision, if genuinely required;
 7. actions not performed, especially runtime, sensitive-data, commit, push, publication, and release boundaries.
 
 ## Pitfalls
 
 - Starting with one visible menu and generalizing a generic cursor.
+- Requiring a whole-game dump or UI census before the next small feature.
+- Letting the same agent write claims, validate their shape, and report them as proven gameplay facts.
 - Treating `activeInHierarchy`, `interactable`, or callback existence as current player operability.
 - Calling hover/click/selection methods to obtain labels.
 - Mixing parser outputs or runtime logs from different builds.

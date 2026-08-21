@@ -158,6 +158,6 @@ Promotion between tiers is allowlist-based, never a bulk copy. When feasible, an
 5. original preservation passed;
 6. deterministic replay passed or bounded variance explained;
 7. no failed/unsupported/unresolved item capable of invalidating the first slice without an explicit runtime plan;
-8. a complete gap ledger for remaining unknowns.
+8. a complete gap ledger for remaining unknowns that can affect the declared slice.
 
-`DUMP-PARTIAL` may proceed when the first slice is not affected, the gap is fail-closed, and the exact re-open trigger is known. `DO NOT PROCEED` applies to mixed builds, preservation failure, unexplained count loss, unknown parser trust, or a first-slice source blocker.
+`DUMP-PARTIAL` may support the next slice when that slice is not affected, the gap is fail-closed, and the exact re-open trigger is known. Do not frontload extraction for unrelated systems. `BLOCKED FOR THIS SLICE` applies to mixed builds, preservation failure, unexplained count loss inside the declared scope, unknown parser trust, or an applicable source blocker.

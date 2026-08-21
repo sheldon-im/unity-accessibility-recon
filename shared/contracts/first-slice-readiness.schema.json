@@ -1,25 +1,58 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/uar/first-slice-readiness.schema.json",
-  "title": "First accessibility slice readiness",
+  "title": "Slice-scoped accessibility readiness",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "schemaVersion",
     "sliceId",
     "buildFingerprintId",
+    "validationScope",
+    "scope",
     "artifactStatus",
     "runtimePlan",
+    "claims",
+    "runtimeProbe",
     "gaps",
-    "qaVerdict",
+    "codeQaStatus",
     "authorizationBoundary",
-    "claimedVerdict"
+    "claimedDecision"
   ],
   "properties": {
-    "schemaVersion": {"const": 1},
+    "schemaVersion": {"const": 2},
     "sliceId": {"type": "string", "pattern": "^SLICE-[A-Z0-9-]+$"},
     "buildFingerprintId": {"type": "string", "minLength": 3},
+    "validationScope": {"const": "INTERNAL-CONSISTENCY-ONLY"},
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["playerGoal", "inScopeSurfaceIds", "outOfScope"],
+      "properties": {
+        "playerGoal": {"type": "string", "minLength": 10},
+        "inScopeSurfaceIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^SURFACE-[A-Z0-9-]+$"}
+        },
+        "outOfScope": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["area", "reason"],
+            "properties": {
+              "area": {"type": "string", "minLength": 3},
+              "reason": {"type": "string", "minLength": 10}
+            }
+          }
+        }
+      }
+    },
     "artifactStatus": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "authorization",
         "buildFingerprint",
@@ -32,14 +65,14 @@
         "authorization": {"enum": ["CLOSED", "BLOCKED"]},
         "buildFingerprint": {"enum": ["VALID", "BLOCKED"]},
         "sourceManifest": {"enum": ["VALID", "BLOCKED"]},
-        "extractionCoverage": {"enum": ["DUMP-READY", "DUMP-PARTIAL", "BLOCKED"]},
-        "staticUiLedger": {"enum": ["WHOLE-GAME-MAPPED", "PARTIAL", "BLOCKED"]},
-        "surfaceLifecycleMatrix": {"enum": ["WHOLE-GAME-MAPPED", "PARTIAL", "BLOCKED"]}
-      },
-      "additionalProperties": false
+        "extractionCoverage": {"enum": ["SLICE-READY", "SLICE-PARTIAL", "BLOCKED"]},
+        "staticUiLedger": {"enum": ["SLICE-MAPPED", "PARTIAL", "BLOCKED"]},
+        "surfaceLifecycleMatrix": {"enum": ["SLICE-MAPPED", "PARTIAL", "BLOCKED"]}
+      }
     },
     "runtimePlan": {
       "type": "object",
+      "additionalProperties": false,
       "required": [
         "ownerTestable",
         "inputTestable",
@@ -53,13 +86,127 @@
         "privacyDefined": {"type": "boolean"},
         "preservationDefined": {"type": "boolean"},
         "deploymentRollbackDefined": {"type": "boolean"}
+      }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claimId",
+          "statement",
+          "claimGrade",
+          "evidenceRefs",
+          "challengeTest",
+          "appliesToSlice"
+        ],
+        "properties": {
+          "claimId": {"type": "string", "pattern": "^CLAIM-[A-Z0-9-]+$"},
+          "statement": {"type": "string", "minLength": 10},
+          "claimGrade": {
+            "enum": [
+              "SOURCE-IDENTIFIED",
+              "STATIC-CONFIRMED",
+              "RUNTIME-OBSERVED",
+              "PHYSICAL-INPUT-PROVEN",
+              "POSTCONDITION-PROVEN",
+              "SPEECH-DISPATCH-PROVEN",
+              "NVDA-MANUAL-CONFIRMED",
+              "OPEN / DYNAMIC-UNVERIFIED"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 3}
+          },
+          "challengeTest": {"type": ["string", "null"], "minLength": 10},
+          "appliesToSlice": {"type": "boolean"}
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "claimGrade": {
+                  "enum": [
+                    "SOURCE-IDENTIFIED",
+                    "STATIC-CONFIRMED",
+                    "OPEN / DYNAMIC-UNVERIFIED"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "challengeTest": {"type": "string", "minLength": 10}
+              }
+            }
+          }
+        ]
+      }
+    },
+    "runtimeProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "question",
+        "method",
+        "expectedObservation",
+        "failureMeaning",
+        "challengedClaimIds",
+        "resultSummary",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "status": {"enum": ["NOT-RUN", "PASSED", "FAILED"]},
+        "question": {"type": "string", "minLength": 10},
+        "method": {"type": "string", "minLength": 10},
+        "expectedObservation": {"type": "string", "minLength": 10},
+        "failureMeaning": {"type": "string", "minLength": 10},
+        "challengedClaimIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^CLAIM-[A-Z0-9-]+$"}
+        },
+        "resultSummary": {"type": ["string", "null"], "minLength": 10},
+        "evidenceRefs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 3}
+        }
       },
-      "additionalProperties": false
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "NOT-RUN"}}},
+          "then": {
+            "properties": {
+              "resultSummary": {"const": null},
+              "evidenceRefs": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"enum": ["PASSED", "FAILED"]}}},
+          "then": {
+            "properties": {
+              "resultSummary": {"type": "string", "minLength": 10},
+              "evidenceRefs": {"minItems": 1}
+            }
+          }
+        }
+      ]
     },
     "gaps": {
       "type": "array",
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": [
           "gapId",
           "claimGrade",
@@ -84,15 +231,19 @@
           },
           "appliesToSlice": {"type": "boolean"},
           "blocking": {"type": "boolean"},
-          "guard": {"type": "string", "minLength": 3},
-          "reOpenTrigger": {"type": "string", "minLength": 3}
-        },
-        "additionalProperties": false
+          "guard": {"type": "string", "minLength": 10},
+          "reOpenTrigger": {"type": "string", "minLength": 10}
+        }
       }
     },
-    "qaVerdict": {"enum": ["PROCEED", "PROCEED WITH TODOs", "DO NOT PROCEED"]},
+    "codeQaStatus": {"enum": ["PASS", "PASS-WITH-TODOS", "BLOCKED"]},
     "authorizationBoundary": {"type": "string", "minLength": 10},
-    "claimedVerdict": {"enum": ["PROCEED", "PROCEED WITH TODOs", "DO NOT PROCEED"]}
-  },
-  "additionalProperties": false
+    "claimedDecision": {
+      "enum": [
+        "READY FOR RUNTIME PROBE",
+        "READY FOR SLICE IMPLEMENTATION",
+        "BLOCKED FOR THIS SLICE"
+      ]
+    }
+  }
 }

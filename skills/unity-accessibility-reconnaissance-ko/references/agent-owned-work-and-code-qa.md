@@ -120,16 +120,18 @@ checkpoint report는 간결해야 합니다.
 닫은 work slice
 실행한 검사와 관찰 결과
 자동 수정 내용
-현재 verdict
+현재 Code QA status
 남은 guarded TODO
 필요한 경우 한 가지 사용자 결정
 실행하지 않은 행동
 ```
 
-verdict:
+Code QA status:
 
-- `PROCEED`: current gate 닫힘
-- `PROCEED WITH TODOs`: remaining finding에 guard와 trigger 존재
-- `DO NOT PROCEED`: unresolved blocker가 범위 확대, 제품 결정, 실제 acceptance 또는 외부 효과를 요구
+- `PASS`: 현재 QA blocker 없음
+- `PASS-WITH-TODOS`: remaining finding에 guard와 trigger 존재
+- `BLOCKED`: unresolved QA blocker가 repair, 범위 확대, 제품 결정, 실제 acceptance 또는 외부 효과를 요구
+
+이 status는 code와 artifact 품질을 설명합니다. agent의 game 해석이 사실임을 증명하지 않으며 `first-slice-readiness.schema.json`의 slice decision을 대체하지 않습니다.
 
 QA checkpoint는 broad refactor, commit, push, PR, release, deployment 또는 publication 권한이 아닙니다. 사용자의 기존 권한 안에서 실행 품질을 높입니다.

@@ -65,6 +65,7 @@ class LedgerValidation:
     surface_count: int
     gap_count: int
     gap_ids: tuple[str, ...]
+    surface_ids: tuple[str, ...]
 
 
 def _read_csv(
@@ -127,6 +128,7 @@ def validate_surface_ledgers(
             0,
             0,
             (),
+            (),
         )
     static_issues = validate_instance(static_ui, "static-ui-ledger.schema.json")
     static_records = static_ui.get("records", [])
@@ -143,6 +145,7 @@ def validate_surface_ledgers(
             len(lifecycle),
             len(gaps),
             (),
+            tuple(sorted(row.get("surfaceId", "").strip() for row in lifecycle if row.get("surfaceId", "").strip())),
         )
 
     static_gap_refs: set[str] = set()
@@ -310,4 +313,5 @@ def validate_surface_ledgers(
         len(surface_ids),
         len(gap_ids),
         tuple(sorted(gap_ids)),
+        tuple(sorted(surface_ids)),
     )

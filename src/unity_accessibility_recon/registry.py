@@ -124,16 +124,32 @@ def registry_alignment_errors(root: Path, manifest: dict[str, Any]) -> list[tupl
     if missing_gates:
         errors.append(("COVERAGE_GATE_REGISTRY", f"ref-ui literals missing {missing_gates!r}"))
 
-    readiness_enum = tuple(
-        readiness["properties"]["gaps"]["items"]["properties"]["claimGrade"]["enum"]
-    )
-    if readiness_enum != registry.claim_grades:
+    readiness_decisions = tuple(readiness["properties"]["claimedDecision"]["enum"])
+    if readiness_decisions != registry.verdicts:
         errors.append(
             (
-                "CLAIM_GRADE_REGISTRY",
-                f"readiness claimGrade={readiness_enum!r}, registry={registry.claim_grades!r}",
+                "DECISION_REGISTRY",
+                f"readiness claimedDecision={readiness_decisions!r}, registry={registry.verdicts!r}",
             )
         )
+
+    readiness_claim_enum = tuple(
+        readiness["properties"]["claims"]["items"]["properties"]["claimGrade"]["enum"]
+    )
+    readiness_gap_enum = tuple(
+        readiness["properties"]["gaps"]["items"]["properties"]["claimGrade"]["enum"]
+    )
+    for field, readiness_enum in (
+        ("claims", readiness_claim_enum),
+        ("gaps", readiness_gap_enum),
+    ):
+        if readiness_enum != registry.claim_grades:
+            errors.append(
+                (
+                    "CLAIM_GRADE_REGISTRY",
+                    f"readiness {field} claimGrade={readiness_enum!r}, registry={registry.claim_grades!r}",
+                )
+            )
 
     runtime_gate_enum = tuple(runtime["properties"]["coverageGate"]["enum"])
     expected_runtime_gates = registry.coverage_gates[1:]

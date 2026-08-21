@@ -158,6 +158,6 @@ tier 간 승격은 bulk copy가 아니라 allowlist 방식으로 수행합니다
 5. original preservation 통과
 6. deterministic replay 통과 또는 제한된 variance 설명
 7. 명시적 runtime 계획 없이 first slice를 무효화할 수 있는 failed/unsupported/unresolved item이 없음
-8. 남은 unknown의 완전한 gap ledger
+8. 선언한 slice에 영향을 줄 수 있는 남은 unknown의 완전한 gap ledger
 
-first slice가 영향받지 않고, gap이 fail closed이며, 정확한 re-open trigger를 알면 `DUMP-PARTIAL`로 진행할 수 있습니다. mixed build, preservation failure, 설명되지 않은 count loss, parser trust unknown 또는 first-slice source blocker에는 `DO NOT PROCEED`를 적용합니다.
+다음 slice가 영향받지 않고, gap이 fail closed이며, 정확한 re-open trigger를 알면 `DUMP-PARTIAL`을 사용할 수 있습니다. 관련 없는 system을 위해 extraction을 앞당기지 않습니다. mixed build, preservation failure, 선언한 범위 안의 설명되지 않은 count loss, parser trust unknown 또는 해당 slice source blocker에는 `BLOCKED FOR THIS SLICE`를 적용합니다.

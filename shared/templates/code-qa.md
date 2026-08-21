@@ -1,6 +1,6 @@
 # Code QA
 
-상태: `DO NOT PROCEED` until live evidence is recorded.
+상태: `BLOCKED` until the evidence required for this QA scope is recorded.
 
 ## Scope and milestone
 

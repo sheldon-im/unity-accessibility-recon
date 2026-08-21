@@ -18,21 +18,13 @@ Recommended static artifact and record fields:
 
 Global enumeration is acceptable for diagnostic census. It is not a player-facing eligibility rule.
 
-## UI-FAMILIES — Cover the whole game before choosing the first slice
+## UI-FAMILIES — Follow the current slice dependency path
 
-Inventory families, not only screens reachable from a new default profile. At minimum consider:
+Start from one player goal and inventory only the surfaces needed to enter, complete, cancel, fail, and restore that path. Include adjacent modal or conditional surfaces only when static evidence or a runtime observation shows they can affect the slice.
 
-1. boot, seizure/accessibility warning, consent, language, title;
-2. account, cloud conflict, save/profile/load, new game and difficulty;
-3. options, audio, controls, rebind, text input and confirmation dialogs;
-4. single/multiplayer, lobby, invite, room code, network errors;
-5. HUD, status, notifications, tooltips, tutorial, quests and dialogue;
-6. pause, death, retry, results, ending and credits;
-7. inventory/grid, item detail, drag/drop, equipment, crafting, shop and construction;
-8. map, scanner, navigation, target/unit/incident selection, world-space UI and interaction;
-9. game-specific hazards, timing prompts, combat telegraphs, progression/DLC and conditional content.
+Keep other families in a short out-of-scope list. Do not enumerate options, saves, multiplayer, HUD, inventory, maps, endings, DLC, or other game-specific systems merely because they might exist. Promote one of them into the dependency map when a selected feature, implementation finding, or live test makes it relevant.
 
-For inaccessible or unreachable conditions, record the dependency and a bounded future observation plan. Do not silently omit them.
+For an inaccessible or unreached condition inside the current slice, record the dependency and the smallest future observation plan. Do not silently omit an applicable unknown.
 
 ## UI-OWNERSHIP — Name the current state owners
 
@@ -144,7 +136,7 @@ A family is `COVERAGE-CLOSED` only when:
 7. manual NVDA claims exist only where the user confirmed them;
 8. remaining gaps have reproducible conditions and re-open triggers.
 
-Whole-game lifecycle mapping may be complete while implementation coverage remains partial. Keep those verdicts separate.
+Slice lifecycle mapping may be sufficient while the rest of the game remains intentionally unknown. `COVERAGE-CLOSED` applies only to the named surface and evidence envelope; it is not a whole-game verdict.
 
 ## UI-REOPEN — Prevent broad re-investigation
 

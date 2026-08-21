@@ -1,7 +1,7 @@
 ---
 name: unity-accessibility-reconnaissance-ko
 description: Unity 화면 읽기 게임 모드의 초기 조사에 사용합니다.
-version: 0.2.0
+version: 0.3.0
 language: ko
 license: MIT
 ---
@@ -10,7 +10,7 @@ license: MIT
 
 ## POLICY-AGENT-NEUTRAL — 핵심 계약
 
-Unity 기반 게임의 첫 화면 읽기 접근성 기능을 구현하기 전에 이 스킬을 사용합니다. 정확한 빌드에 귀속된 원본 기준선을 세우고, 정적 추출 범위를 대조하며, 게임 전체 UI 수명주기를 지도화하고, 개발 후반의 광범위한 UI 재조사를 줄이는 데 필요한 런타임 증거를 정의합니다.
+Unity 기반 화면 읽기 접근성 모드에서 다음으로 작고 의미 있는 player slice를 조사할 때 이 스킬을 사용합니다. 최소한의 build·원본 보존 기준선을 세우고, 해당 slice를 바꿀 수 있는 의존성만 조사하며, 중요한 offline 가정을 작은 runtime test로 확인합니다. 구현이나 live test에서 실제 의존성이 드러날 때 evidence map을 넓히고, 유용한 작업 전에 게임 전체 조사를 요구하지 않습니다.
 
 절차는 agent-neutral입니다. 도구 adapter는 파일 인벤토리, hash, 관리 코드 검사, Unity asset 읽기, runtime 관찰, native input 전달과 speech dispatch 같은 capability를 연결할 수 있습니다. claim grade, coverage gate, schema 또는 권한 경계를 바꾸면 안 됩니다. phase ID, `claimGrade`, `coverageGate`, privacy class와 verdict의 정본은 `shared/phase-ids.yaml` 또는 exported skill의 `references/phase-ids.yaml`입니다.
 
@@ -52,7 +52,7 @@ Unity 기반 게임의 첫 화면 읽기 접근성 기능을 구현하기 전에
 - 별도 승인된 runtime action
 - 현재 commit과 외부 효과 권한
 
-판정은 `PROCEED`, `PROCEED WITH TODOs`, `DO NOT PROCEED` 중 하나입니다.
+권한 상태는 `CLOSED` 또는 `BLOCKED`입니다. 이는 구현 준비 판정이 아닙니다.
 
 ## G1-BASELINE — build와 원본 identity 고정
 
@@ -70,7 +70,9 @@ repository의 `shared/contracts/source-manifest.schema.json`을 사용하며 exp
 
 ## G2-EXTRACTION — 원본 추출 결과 대조
 
-도구를 실행하기 전에 extractor 범위를 선언합니다. 일반적인 Unity 기준선은 다음을 검토합니다.
+추출 도구를 실행하기 전에 질문, source family와 조사 budget을 선언합니다. 이름 붙인 slice에 필요한 가장 작은 source set부터 시작합니다. finding이나 runtime test에서 의존성이 드러날 때만 넓힙니다. 더 넓은 diagnostic census는 선택 사항이며 기본 entry gate가 되어서는 안 됩니다.
+
+관련될 때 검토할 수 있는 source family는 다음과 같습니다.
 
 - player executable과 Unity player/runtime identity
 - Mono assembly 또는 IL2CPP binary와 metadata
@@ -81,7 +83,7 @@ repository의 `shared/contracts/source-manifest.schema.json`을 사용하며 exp
 - managed type, method, inheritance, serialized callback과 dynamic/reflection/instantiate hint
 - mutable save, profile, setting, cloud root와 log는 보호 대상 인벤토리로만 다루고 tracked fixture에 포함하지 않음
 
-성공, 제외, 미지원, parser 실패와 unresolved 항목을 셉니다. source count가 대조되지 않고 실패가 이름 붙지 않았다면 산출물이 많아도 완전한 dump가 아닙니다.
+선언한 범위 안의 성공, 제외, 미지원, parser 실패와 unresolved 항목을 셉니다. 산출물이 많다고 완전한 dump가 아니며, 완전한 dump라고 자동으로 유용한 것도 아닙니다. 현재 질문을 정직하게 test할 수 있으면 추출을 멈춥니다.
 
 ### ART-EXTRACTION-COVERAGE — extraction coverage
 
@@ -91,33 +93,30 @@ repository의 `shared/contracts/extraction-coverage.schema.json`을 사용하며
 
 ## G3-STATIC-DISCOVERY — UI discovery set 작성
 
-UI element, interactable candidate, localization link, callback과 input action ledger를 만듭니다. 원본 근거와 confidence를 보존하고 이를 하나의 player-facing list로 평탄화하지 않습니다.
+현재 slice에 영향을 주는 UI element, interactable candidate, localization link, callback과 input action ledger를 만듭니다. 원본 근거와 confidence를 보존하고 이를 하나의 player-facing list로 평탄화하거나 ledger를 채우기 위해 관련 없는 surface를 검색하지 않습니다.
 
-inactive template, pooled object, dynamic generation hint, pointer-only candidate와 unresolved script type을 포함해 누락을 드러냅니다. 이들은 active runtime control이 아니라 discovery evidence입니다.
+선택한 evidence envelope 안에서 inactive template, pooled object, dynamic generation hint, pointer-only candidate와 unresolved script type을 포함해 관련 누락을 드러냅니다. 이들은 active runtime control이 아니라 discovery evidence입니다.
 
 ### ART-STATIC-UI-LEDGER — 정적 UI ledger
 
 각 record는 `references/contracts/static-ui-ledger.schema.json`을 따릅니다. artifact는 foundation bundle의 `buildFingerprintId`를 반드시 사용하며 `templates/static-ui-ledger.json`에서 시작합니다.
 
-발견된 모든 candidate는 semantic candidate, 명시적 제외 또는 gap에 귀속되어야 합니다. control 존재는 visibility, focus, keyboard action이나 task completion을 증명하지 않습니다.
+범위 안에서 발견된 candidate는 semantic candidate, 명시적 제외 또는 gap에 귀속되어야 합니다. control 존재는 visibility, focus, keyboard action이나 task completion을 증명하지 않습니다.
 
-## G4-LIFECYCLE-MAP — 게임 전체 표면 수명주기 지도화
+## G4-LIFECYCLE-MAP — slice 의존성 지도를 점진적으로 확장
 
-첫 기능 slice 전에 게임 전체의 player-meaningful surface family를 열거합니다.
+하나의 player goal에서 시작합니다. 다음만 지도화합니다.
 
-- startup warning, consent, language, title, account/cloud conflict
-- options, rebind, save/load/profile, multiplayer/lobby
-- HUD, notification, dialogue, quest, tutorial, pause, death, result, ending, credits
-- inventory/grid, shop, crafting, construction, map/scanner/navigation
-- 게임 고유 live gameplay, status, hazard, target, unit 또는 world-interaction 표면
+- 진입 경로와 의도한 완료 상태
+- 현재 slice가 직접 사용하는 surface
+- slice를 무효화할 수 있는 인접 modal, error, cancel과 restoration 경로
+- static evidence나 runtime probe에서 이미 드러난 conditional dependency
 
-각 family에 entry/exit predicate, runtime owner candidate, modal depth, required/optional control, initial focus, child transition, parent restoration, 전문 interaction model, privacy class와 conditional content를 기록합니다.
+관련 없는 family는 이유와 함께 짧은 out-of-scope 목록에 둡니다. 선택한 slice에 들어오기 전에는 자세히 조사하지 않습니다. 범위 안의 각 surface에 entry/exit predicate, runtime owner candidate, modal depth, required/optional control, initial focus, child transition, parent restoration, 전문 interaction model, privacy class와 conditional content를 기록합니다.
 
 ### ART-SURFACE-LIFECYCLE-MATRIX — surface lifecycle matrix
 
-화면 읽기 친화적인 companion과 `templates/surface-lifecycle-matrix.csv`를 사용합니다. 모든 row는 static UI ledger 및 foundation bundle의 `buildFingerprintId`를 반드시 사용하며, required ownership이 불명확하면 generic implementation을 막습니다.
-
-이 matrix는 coverage 지도이지 첫 release에서 모든 표면을 구현한다는 약속이 아닙니다.
+화면 읽기 친화적인 companion과 `templates/surface-lifecycle-matrix.csv`를 사용합니다. 모든 row는 static UI ledger 및 foundation bundle의 `buildFingerprintId`를 반드시 사용하며, required ownership이 불명확하면 영향받는 slice만 막습니다. 이 matrix는 점진적인 dependency map이며 게임 전체 완료 주장이 아닙니다.
 
 ## G5-RUNTIME-COVERAGE — active owner와 control 관찰
 
@@ -127,7 +126,7 @@ surface generation을 모델링합니다. owner와 semantic value가 안정된 �
 
 ### ART-RUNTIME-COVERAGE — static-to-runtime coverage ledger
 
-각 surface family는 근거가 있는 gate까지만 승격합니다.
+범위 안의 각 surface는 근거가 있는 gate까지만 승격합니다.
 
 ```text
 STATIC-MAPPED
@@ -158,14 +157,15 @@ native path가 없거나 사용할 수 없음이 드러난 뒤에만 surface-sco
 
 실제 ownership, semantic label, native input, postcondition, speech와 lifecycle restoration을 사용하는 가장 작은 user-meaningful path를 고릅니다. startup modal과 main title이 generic all-screen cursor보다 안전한 경우가 많지만, 실제 게임 dependency graph를 따릅니다.
 
-첫 slice는 다음 조건에서만 시작합니다.
+slice는 다음 test 또는 구현 단계로 갈 때 다음 조건을 충족해야 합니다.
 
 1. G0와 G1이 닫힘
-2. G2가 `DUMP-READY`이거나 해당 slice blocker가 없는 제한된 `DUMP-PARTIAL`
-3. G3와 G4가 선언한 confidence로 게임 전체 discovery·surface family를 포함
-4. slice에 필요한 runtime owner/input unknown을 명시적으로 검증 가능
-5. privacy, deployment rollback과 game/profile preservation 정의
-6. agent-owned work, commit, verification과 Code QA gate 기록
+2. G2가 해당 slice에 필요한 source family를 포함함. 관련 없는 extraction failure는 막지 않음
+3. G3와 G4가 이름 붙인 in-scope surface와 직접 의존성을 선언한 confidence로 포함
+4. 중요한 offline 가정마다 작은 runtime challenge test 존재
+5. runtime probe가 `challengedClaimIds`를 명시함. 통과한 probe는 각 대상 claim을 해당 probe의 runtime-grade evidence에 연결
+6. privacy, deployment rollback과 game/profile preservation 정의
+7. agent-owned work, commit, verification과 Code QA gate 기록
 
 ### ART-GAP-LEDGER — gap ledger
 
@@ -173,15 +173,30 @@ native path가 없거나 사용할 수 없음이 드러난 뒤에만 surface-sco
 
 ### ART-FIRST-SLICE-READINESS — readiness 기록
 
-slice, required artifact, 해당 gap, QA verdict, 권한 경계와 다음 중 하나를 기록합니다.
+schema version 2 record는 하나의 player goal, in-scope surface, out-of-scope area, claim, gap, runtime probe, Code QA status와 권한 경계를 기록합니다. `validationScope: INTERNAL-CONSISTENCY-ONLY`와 다음 slice-scoped decision 중 하나를 반드시 선언합니다.
 
-- `PROCEED`: 모든 entry gate 충족
-- `PROCEED WITH TODOs`: nonblocking gap에 명시적 guard와 re-open trigger 존재
-- `DO NOT PROCEED`: foundational assumption, first-slice blocker, preservation 실패 또는 mixed-build 상태가 남음
+- `READY FOR RUNTIME PROBE`: record가 일관되고 다음 반증 test가 정의됐습니다. offline finding은 runtime truth가 아닙니다.
+- `READY FOR SLICE IMPLEMENTATION`: 기록된 runtime probe가 통과했고, challenged claim이 모두 `RUNTIME-OBSERVED` 이상이며, 각 대상이 해당 probe와 evidence를 공유합니다.
+- `BLOCKED FOR THIS SLICE`: mixed build, preservation failure, 해당 blocker, 실패한 probe 또는 일관되지 않은 record가 남았습니다.
+
+이 decision은 이름 붙인 slice에만 적용됩니다. 게임 전체 coverage나 manual NVDA acceptance를 증명하지 않습니다.
 
 ## CHECK-EVIDENCE-SEPARATION — claim 감사
 
-보고 전에 모든 claim을 실제 등급에 연결합니다. build, schema validation, callback invocation, speech return code와 agent-driven sequence 성공을 manual keyboard/NVDA acceptance로 설명하면 안 됩니다.
+보고 전에 모든 claim을 실제 등급에 연결합니다. build, schema validation, callback invocation, speech return code와 agent-driven sequence 성공을 manual keyboard/NVDA acceptance로 설명하면 안 됩니다. `SOURCE-IDENTIFIED`, `STATIC-CONFIRMED`, `OPEN / DYNAMIC-UNVERIFIED` slice claim마다 구체적인 challenge test가 필요합니다.
+
+## CHECK-TRANSPARENCY — agent 자기검증 방지
+
+validator는 contract shape, build binding, probe-to-claim evidence link, reference와 내부 일관성을 검사합니다. agent가 게임을 정확히 해석했는지는 증명할 수 없습니다. `VALIDATION_PASS`를 live gameplay의 진실로 보고하지 않습니다.
+
+사용자에게 다음을 포함한 짧은 plain-language view를 제공합니다.
+
+1. 현재 player goal과 in-scope surface
+2. file에서만 확인한 finding
+3. 실행 중인 게임에서 관찰한 finding
+4. 해당 unknown과 blocker
+5. 다음 test와 실패가 뜻하는 것
+6. validator의 명시적 한계
 
 ## CHECK-USER-ROLE — 전맹 사용자 부담 감사
 
@@ -191,17 +206,19 @@ agent가 사용자에게 screen 시각 열거, screenshot 판독, Unity hierarch
 
 각 gate에서 다음을 보고합니다.
 
-1. 생성한 artifact와 build identity
-2. 수집한 증거와 실행한 정확한 검사
-3. 닫힌 gap과 남은 blocker
-4. 자동 수정과 QA verdict
-5. 다음 승인된 local slice
+1. 이름 붙인 player goal과 정확한 slice 경계
+2. offline finding, runtime finding, assumption과 unknown을 분리한 목록
+3. 가장 작은 다음 test와 실패 의미
+4. consistency check로만 설명한 contract 검사
+5. 자동 수정과 Code QA status
 6. 실제로 필요할 때만 가장 작은 사용자 결정
 7. 실행하지 않은 행동, 특히 runtime, 민감정보, commit, push, 게시와 release 경계
 
 ## 피해야 할 패턴
 
 - 한 개의 보이는 menu에서 시작해 generic cursor로 일반화
+- 다음 작은 기능 전에 게임 전체 dump나 UI census 요구
+- 같은 agent가 claim을 쓰고 형식을 검증한 뒤 gameplay fact로 보고
 - `activeInHierarchy`, `interactable` 또는 callback 존재를 현재 player operability로 간주
 - label을 얻으려고 hover/click/selection method 호출
 - 다른 build의 parser output 또는 runtime log 혼합

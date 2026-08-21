@@ -1,0 +1,57 @@
+schemaVersion: 2
+sliceId: SLICE-STARTUP-TITLE
+buildFingerprintId: synthetic-100-unity2022-mono-windows-x64
+validationScope: INTERNAL-CONSISTENCY-ONLY
+scope:
+  playerGoal: Operate the startup and title menus.
+  inScopeSurfaceIds:
+    - SURFACE-STARTUP
+    - SURFACE-TITLE
+  outOfScope:
+    - area: Gameplay and settings surfaces
+      reason: They are not dependencies of this slice.
+artifactStatus:
+  authorization: CLOSED
+  buildFingerprint: VALID
+  sourceManifest: VALID
+  extractionCoverage: SLICE-READY
+  staticUiLedger: SLICE-MAPPED
+  surfaceLifecycleMatrix: SLICE-MAPPED
+runtimePlan:
+  ownerTestable: true
+  inputTestable: true
+  privacyDefined: true
+  preservationDefined: true
+  deploymentRollbackDefined: true
+claims:
+  - claimId: CLAIM-STARTUP-OWNER
+    statement: The startup screen owns input after boot.
+    claimGrade: RUNTIME-OBSERVED
+    evidenceRefs:
+      - synthetic-runtime:startup-owner
+    challengeTest: null
+    appliesToSlice: true
+  - claimId: CLAIM-TITLE-RESTORE
+    statement: The title screen restores focus after closing a child screen.
+    claimGrade: RUNTIME-OBSERVED
+    evidenceRefs:
+      - synthetic-runtime:title-restore
+    challengeTest: null
+    appliesToSlice: true
+runtimeProbe:
+  status: PASSED
+  question: Do the startup and title owners match the offline candidates?
+  method: Observe active owners during startup and after a child screen closes.
+  expectedObservation: StartupPanel then TitlePanel own input and title focus returns.
+  failureMeaning: Revise the owner model before implementing this slice.
+  challengedClaimIds:
+    - CLAIM-STARTUP-OWNER
+    - CLAIM-TITLE-RESTORE
+  resultSummary: The expected owners and title restoration were observed.
+  evidenceRefs:
+    - synthetic-runtime:startup-owner
+    - synthetic-runtime:title-restore
+gaps: []
+codeQaStatus: PASS
+authorizationBoundary: Implementation may start locally; game changes and publication remain separately authorized.
+claimedDecision: READY FOR SLICE IMPLEMENTATION

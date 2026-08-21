@@ -39,7 +39,11 @@ def test_readme_commands_and_contract_literals_stay_in_sync() -> None:
         "shared/phase-ids.yaml",
         "--static-ui",
         "THIRD-PARTY-NOTICES.md",
-        "0.2.0",
+        "0.3.0",
+        "INTERNAL-CONSISTENCY-ONLY",
+        "READY FOR RUNTIME PROBE",
+        "READY FOR SLICE IMPLEMENTATION",
+        "BLOCKED FOR THIS SLICE",
     ):
         assert literal in english
         assert literal in korean
@@ -52,7 +56,7 @@ def test_readme_commands_and_contract_literals_stay_in_sync() -> None:
 def test_release_version_and_license_metadata_align() -> None:
     metadata = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
     project = metadata["project"]
-    assert project["version"] == __version__ == "0.2.0"
+    assert project["version"] == __version__ == "0.3.0"
     assert project["license"] == "MIT"
     assert project["license-files"] == ["LICENSE"]
 

@@ -1,0 +1,66 @@
+schemaVersion: 2
+sliceId: SLICE-STARTUP-TITLE
+buildFingerprintId: synthetic-100-unity2022-mono-windows-x64
+validationScope: INTERNAL-CONSISTENCY-ONLY
+scope:
+  playerGoal: Operate the startup and title menus.
+  inScopeSurfaceIds:
+    - SURFACE-STARTUP
+    - SURFACE-TITLE
+  outOfScope:
+    - area: Gameplay and settings surfaces
+      reason: They are not dependencies of this slice.
+artifactStatus:
+  authorization: CLOSED
+  buildFingerprint: VALID
+  sourceManifest: VALID
+  extractionCoverage: BLOCKED
+  staticUiLedger: SLICE-MAPPED
+  surfaceLifecycleMatrix: SLICE-MAPPED
+runtimePlan:
+  ownerTestable: true
+  inputTestable: true
+  privacyDefined: true
+  preservationDefined: true
+  deploymentRollbackDefined: true
+claims:
+  - claimId: CLAIM-STATIC-CONTROLS
+    statement: Startup and title controls are candidates found in files.
+    claimGrade: STATIC-CONFIRMED
+    evidenceRefs:
+      - static-ledger:startup
+      - static-ledger:title
+    challengeTest: Observe the active controls and owners in the running game.
+    appliesToSlice: true
+runtimeProbe:
+  status: NOT-RUN
+  question: Which objects own input on the startup and title surfaces?
+  method: Launch the build and observe which object owns input on startup and title.
+  expectedObservation: The observed owners match or replace the offline candidates.
+  failureMeaning: Revise the lifecycle and control model before implementation.
+  challengedClaimIds:
+    - CLAIM-STATIC-CONTROLS
+  resultSummary: null
+  evidenceRefs: []
+gaps:
+  - gapId: GAP-PARSER-BOUNDED
+    claimGrade: OPEN / DYNAMIC-UNVERIFIED
+    appliesToSlice: true
+    blocking: true
+    guard: Do not implement the affected slice while required extraction is unavailable.
+    reOpenTrigger: Re-open after compatible extraction or a bounded runtime owner probe.
+  - gapId: GAP-RUNTIME-STARTUP
+    claimGrade: OPEN / DYNAMIC-UNVERIFIED
+    appliesToSlice: true
+    blocking: false
+    guard: Treat the static owner as a hypothesis until the runtime probe.
+    reOpenTrigger: Re-open if the startup runtime owner differs from the candidate.
+  - gapId: GAP-RUNTIME-TITLE
+    claimGrade: OPEN / DYNAMIC-UNVERIFIED
+    appliesToSlice: true
+    blocking: false
+    guard: Treat title focus restoration as unknown until the runtime probe.
+    reOpenTrigger: Re-open if title focus does not restore after a child closes.
+codeQaStatus: BLOCKED
+authorizationBoundary: Read-only investigation only until the slice blocker is resolved.
+claimedDecision: BLOCKED FOR THIS SLICE

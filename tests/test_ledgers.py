@@ -59,6 +59,7 @@ def test_valid_surface_ledgers_pass() -> None:
         "GAP-RUNTIME-STARTUP",
         "GAP-RUNTIME-TITLE",
     )
+    assert report.surface_ids == ("SURFACE-STARTUP", "SURFACE-TITLE")
 
 
 def test_mixed_build_coverage_fails(tmp_path: Path) -> None:

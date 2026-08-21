@@ -1,6 +1,14 @@
-schemaVersion: 1
+schemaVersion: 2
 sliceId: SLICE-REPLACE-ME
 buildFingerprintId: replace-me
+validationScope: INTERNAL-CONSISTENCY-ONLY
+scope:
+  playerGoal: Describe one small player goal for the next accessibility slice.
+  inScopeSurfaceIds:
+    - SURFACE-REPLACE-ME
+  outOfScope:
+    - area: Unrelated game areas
+      reason: Not required for the named player goal; investigate only if a dependency appears.
 artifactStatus:
   authorization: BLOCKED
   buildFingerprint: BLOCKED
@@ -14,13 +22,31 @@ runtimePlan:
   privacyDefined: false
   preservationDefined: false
   deploymentRollbackDefined: false
+claims:
+  - claimId: CLAIM-REPLACE-ME
+    statement: Describe a bounded offline finding or explicit unknown.
+    claimGrade: OPEN / DYNAMIC-UNVERIFIED
+    evidenceRefs:
+      - evidence:replace-me
+    challengeTest: Describe the smallest live test that could show this claim is wrong.
+    appliesToSlice: true
+runtimeProbe:
+  status: NOT-RUN
+  question: What live-game question must be answered for this slice?
+  method: Describe the smallest authorized runtime observation.
+  expectedObservation: Describe what would support the current model.
+  failureMeaning: Describe what must be revised if the observation differs.
+  challengedClaimIds:
+    - CLAIM-REPLACE-ME
+  resultSummary: null
+  evidenceRefs: []
 gaps:
   - gapId: GAP-REPLACE-ME
     claimGrade: OPEN / DYNAMIC-UNVERIFIED
     appliesToSlice: true
     blocking: true
-    guard: Fail closed until real evidence replaces this template.
+    guard: Keep this slice blocked until evidence replaces the unknown.
     reOpenTrigger: Re-open when the required build-bound evidence exists.
-qaVerdict: DO NOT PROCEED
+codeQaStatus: BLOCKED
 authorizationBoundary: Read-only inspection only until explicitly changed.
-claimedVerdict: DO NOT PROCEED
+claimedDecision: BLOCKED FOR THIS SLICE

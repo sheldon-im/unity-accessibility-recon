@@ -26,6 +26,7 @@ documents:
       - ART-GAP-LEDGER
       - ART-FIRST-SLICE-READINESS
       - CHECK-EVIDENCE-SEPARATION
+      - CHECK-TRANSPARENCY
       - CHECK-USER-ROLE
       - CHECK-REPORTING
     requiredLiterals:
@@ -38,14 +39,17 @@ documents:
       - NVDA-MANUAL-CONFIRMED
       - OPEN / DYNAMIC-UNVERIFIED
       - claimGrade
+      - challengedClaimIds
       - coverageGate
       - static-ui-ledger.schema.json
       - static-ui-ledger.json
       - DUMP-READY
       - DUMP-PARTIAL
       - COVERAGE-CLOSED
-      - PROCEED WITH TODOs
-      - DO NOT PROCEED
+      - INTERNAL-CONSISTENCY-ONLY
+      - READY FOR RUNTIME PROBE
+      - READY FOR SLICE IMPLEMENTATION
+      - BLOCKED FOR THIS SLICE
   - documentId: ref-dump
     enPath: skills/unity-accessibility-reconnaissance-en/references/dump-and-source-reconciliation.md
     koPath: skills/unity-accessibility-reconnaissance-ko/references/dump-and-source-reconciliation.md
@@ -111,5 +115,5 @@ documents:
       - MUST
       - FOLLOW-UP
       - OBSERVATION
-      - PROCEED WITH TODOs
-      - DO NOT PROCEED
+      - PASS-WITH-TODOS
+      - BLOCKED
