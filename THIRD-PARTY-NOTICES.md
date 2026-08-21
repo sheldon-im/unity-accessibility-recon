@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-This file records the dependency evidence used for the local `0.2.0` release-candidate audit on 2026-08-21.
+This file records the dependency evidence first audited for the local `0.2.0` release candidate on 2026-08-21 and rechecked against the unchanged lock for the `0.3.0` release on 2026-08-22.
 
 ## Distribution model
 

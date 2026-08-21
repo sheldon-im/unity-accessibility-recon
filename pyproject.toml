@@ -1,6 +1,6 @@
 [project]
 name = "unity-accessibility-reconnaissance"
-version = "0.2.0"
+version = "0.3.0"
 description = "Agent-neutral reconnaissance contracts for Unity screen-reader accessibility mods"
 readme = "README.md"
 requires-python = ">=3.11"

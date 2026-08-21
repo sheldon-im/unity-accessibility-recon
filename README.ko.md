@@ -129,9 +129,11 @@ uv run uar export-skills \
 
 내보낸 각 folder에는 skill, reference, contract, template, 공통 registry, adapter contract와 MIT license가 포함됩니다. exporter는 기존 target folder를 덮어쓰지 않습니다.
 
+Release별 변경과 호환성 메모는 [CHANGELOG.md](CHANGELOG.md)를 확인하세요.
+
 ## 검증 상태
 
-Version `0.3.0`은 개발 후보입니다. 점진적 slice contract, consistency-only validator, 영한 parity, CLI 출력과 package build를 저장소 test suite로 검사합니다. 이전 `0.2.0` wheel은 깨끗한 Windows 11 환경에서 설치 검증을 통과했지만, 변경된 `0.3.0` 동작은 release 전에 Windows-native smoke test를 다시 해야 합니다.
+Version `0.3.0`은 현재 release입니다. 점진적 slice contract, consistency-only validator, 영한 parity, CLI 출력과 package build를 저장소 test suite로 검사했습니다. Release wheel은 Python 3.11.9를 사용한 깨끗한 Windows 11 설치 smoke도 통과했으며, version import, CLI 시작, 설치 package의 영한 parity와 영어·한국어 standalone skill export를 확인했습니다.
 
 Raw game file이나 private runtime log는 추적하지 않습니다. 자세한 품질 기록과 아직 검증하지 않은 영역은 `CODE-QA.md`를 확인하세요.
 

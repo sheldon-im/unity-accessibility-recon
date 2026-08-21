@@ -129,9 +129,11 @@ uv run uar export-skills \
 
 Each exported folder includes its skill, references, contracts, templates, shared registry, adapter contract, and MIT license. The exporter will not replace an existing target folder.
 
+See [CHANGELOG.md](CHANGELOG.md) for release-by-release changes and compatibility notes.
+
 ## Verification status
 
-Version `0.3.0` is a development candidate. Its progressive-slice contracts, consistency-only validator, bilingual parity, CLI output, and package build are checked by the repository test suite. The previous `0.2.0` wheel passed a clean Windows 11 installation test; the changed `0.3.0` behavior still needs a new Windows-native smoke test before release.
+Version `0.3.0` is the current release. Its progressive-slice contracts, consistency-only validator, bilingual parity, CLI output, and package build are checked by the repository test suite. The release wheel also passed a clean Windows 11 installation smoke with Python 3.11.9, including version import, CLI startup, installed bilingual parity, and English/Korean standalone skill export.
 
 No raw game files or private runtime logs are tracked. See `CODE-QA.md` for the detailed quality record and remaining unverified areas.
 
