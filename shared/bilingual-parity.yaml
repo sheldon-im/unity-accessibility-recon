@@ -1,0 +1,115 @@
+schemaVersion: 1
+documents:
+  - documentId: skill-core
+    enPath: skills/unity-accessibility-reconnaissance-en/SKILL.md
+    koPath: skills/unity-accessibility-reconnaissance-ko/SKILL.md
+    requiredIds:
+      - POLICY-AGENT-NEUTRAL
+      - POLICY-AGENCY
+      - POLICY-EVIDENCE
+      - G0-AUTHORIZATION
+      - ART-AUTHORIZATION-RECORD
+      - G1-BASELINE
+      - ART-BUILD-FINGERPRINT
+      - ART-SOURCE-MANIFEST
+      - G2-EXTRACTION
+      - ART-EXTRACTION-COVERAGE
+      - G3-STATIC-DISCOVERY
+      - ART-STATIC-UI-LEDGER
+      - G4-LIFECYCLE-MAP
+      - ART-SURFACE-LIFECYCLE-MATRIX
+      - G5-RUNTIME-COVERAGE
+      - ART-RUNTIME-COVERAGE
+      - G6-INPUT-POSTCONDITION
+      - ART-NATIVE-INPUT-MATRIX
+      - G7-FIRST-SLICE-READINESS
+      - ART-GAP-LEDGER
+      - ART-FIRST-SLICE-READINESS
+      - CHECK-EVIDENCE-SEPARATION
+      - CHECK-USER-ROLE
+      - CHECK-REPORTING
+    requiredLiterals:
+      - SOURCE-IDENTIFIED
+      - STATIC-CONFIRMED
+      - RUNTIME-OBSERVED
+      - PHYSICAL-INPUT-PROVEN
+      - POSTCONDITION-PROVEN
+      - SPEECH-DISPATCH-PROVEN
+      - NVDA-MANUAL-CONFIRMED
+      - OPEN / DYNAMIC-UNVERIFIED
+      - claimGrade
+      - coverageGate
+      - static-ui-ledger.schema.json
+      - static-ui-ledger.json
+      - DUMP-READY
+      - DUMP-PARTIAL
+      - COVERAGE-CLOSED
+      - PROCEED WITH TODOs
+      - DO NOT PROCEED
+  - documentId: ref-dump
+    enPath: skills/unity-accessibility-reconnaissance-en/references/dump-and-source-reconciliation.md
+    koPath: skills/unity-accessibility-reconnaissance-ko/references/dump-and-source-reconciliation.md
+    requiredIds:
+      - DUMP-SCOPE
+      - DUMP-FINGERPRINT
+      - DUMP-SOURCE-FAMILIES
+      - DUMP-PARSER-IDENTITY
+      - DUMP-RECONCILIATION
+      - DUMP-PRESERVATION
+      - DUMP-PRIVACY
+      - DUMP-PRIVACY-TIERS
+      - DUMP-VERDICT
+    requiredLiterals:
+      - DUMP-READY
+      - DUMP-PARTIAL
+      - partial
+      - not-present
+      - global-metadata.dat
+      - source-manifest
+      - canonical JSON
+      - SHA-256
+      - privacy-minimal
+  - documentId: ref-ui
+    enPath: skills/unity-accessibility-reconnaissance-en/references/ui-surface-and-lifecycle-coverage.md
+    koPath: skills/unity-accessibility-reconnaissance-ko/references/ui-surface-and-lifecycle-coverage.md
+    requiredIds:
+      - UI-DISCOVERY
+      - UI-FAMILIES
+      - UI-OWNERSHIP
+      - UI-GENERATION
+      - UI-SNAPSHOT
+      - UI-INPUT
+      - UI-CLOSURE
+      - UI-REOPEN
+    requiredLiterals:
+      - surfaceGeneration
+      - EventSystem.current.currentSelectedGameObject
+      - coverageGate
+      - STATIC-MAPPED
+      - RUNTIME-OWNER-OBSERVED
+      - ACTIVE-CONTROLS-INVENTORIED
+      - SEMANTIC-MODELED
+      - NATIVE-FOCUS-PROVEN
+      - NATIVE-ACTION-POSTCONDITION-PROVEN
+      - NVDA-MANUAL-CONFIRMED
+      - COVERAGE-CLOSED
+  - documentId: ref-agent-work
+    enPath: skills/unity-accessibility-reconnaissance-en/references/agent-owned-work-and-code-qa.md
+    koPath: skills/unity-accessibility-reconnaissance-ko/references/agent-owned-work-and-code-qa.md
+    requiredIds:
+      - WORK-OWNERSHIP
+      - WORK-SLICE
+      - WORK-COMMIT
+      - QA-TRIGGERS
+      - QA-FINDINGS
+      - QA-AUTOMATIC-REPAIR
+      - QA-USER-DECISION
+      - QA-REPORT
+    requiredLiterals:
+      - phase-scoped
+      - BLOCK
+      - MUST
+      - FOLLOW-UP
+      - OBSERVATION
+      - PROCEED WITH TODOs
+      - DO NOT PROCEED

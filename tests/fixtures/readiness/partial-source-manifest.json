@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "buildFingerprintId": "synthetic-100-unity2022-mono-windows-x64",
+  "preservation": {
+    "preDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "postDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "changedPaths": []
+  },
+  "families": [
+    {
+      "familyId": "managed-assemblies",
+      "applicable": true,
+      "disposition": "extracted",
+      "reason": null,
+      "recordCount": 42,
+      "evidence": ["ledgers/types.jsonl"]
+    },
+    {
+      "familyId": "il2cpp-binary-metadata",
+      "applicable": false,
+      "disposition": "not-present",
+      "reason": null,
+      "recordCount": 0,
+      "evidence": []
+    },
+    {
+      "familyId": "other",
+      "applicable": true,
+      "disposition": "failed",
+      "reason": "Synthetic parser limitation outside the startup/title slice.",
+      "recordCount": 0,
+      "evidence": ["gaps/GAP-PARSER-BOUNDED.json"]
+    }
+  ]
+}

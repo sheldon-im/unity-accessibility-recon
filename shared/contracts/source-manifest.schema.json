@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/uar/source-manifest.schema.json",
+  "title": "Unity accessibility reconnaissance source manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "buildFingerprintId", "preservation", "families"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "buildFingerprintId": { "type": "string", "minLength": 1 },
+    "preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["preDigest", "postDigest", "changedPaths"],
+      "properties": {
+        "preDigest": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "postDigest": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "changedPaths": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "families": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["familyId", "applicable", "disposition", "reason", "recordCount", "evidence"],
+        "properties": {
+          "familyId": {
+            "enum": [
+              "executable-player",
+              "managed-assemblies",
+              "il2cpp-binary-metadata",
+              "unity-global-managers",
+              "scenes-prefabs",
+              "resources-bundles",
+              "localization",
+              "input",
+              "mutable-user-data",
+              "other"
+            ]
+          },
+          "applicable": { "type": "boolean" },
+          "disposition": { "enum": ["extracted", "partial", "excluded-with-reason", "unsupported", "failed", "not-present"] },
+          "reason": { "type": ["string", "null"] },
+          "recordCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Successfully extracted records represented by this family evidence; equals coverage.extracted for extracted/partial and is zero otherwise."
+          },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^(?!/|[A-Za-z]:[\\\\/]).+" },
+            "uniqueItems": true
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "disposition": { "enum": ["extracted", "partial"] } } },
+            "then": { "properties": { "evidence": { "minItems": 1 } } }
+          },
+          {
+            "if": { "properties": { "disposition": { "enum": ["partial", "excluded-with-reason", "unsupported", "failed"] } } },
+            "then": { "properties": { "reason": { "type": "string", "minLength": 1 } } }
+          }
+        ]
+      }
+    }
+  }
+}

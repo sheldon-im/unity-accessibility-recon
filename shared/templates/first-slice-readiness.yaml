@@ -1,0 +1,26 @@
+schemaVersion: 1
+sliceId: SLICE-REPLACE-ME
+buildFingerprintId: replace-me
+artifactStatus:
+  authorization: BLOCKED
+  buildFingerprint: BLOCKED
+  sourceManifest: BLOCKED
+  extractionCoverage: BLOCKED
+  staticUiLedger: BLOCKED
+  surfaceLifecycleMatrix: BLOCKED
+runtimePlan:
+  ownerTestable: false
+  inputTestable: false
+  privacyDefined: false
+  preservationDefined: false
+  deploymentRollbackDefined: false
+gaps:
+  - gapId: GAP-REPLACE-ME
+    claimGrade: OPEN / DYNAMIC-UNVERIFIED
+    appliesToSlice: true
+    blocking: true
+    guard: Fail closed until real evidence replaces this template.
+    reOpenTrigger: Re-open when the required build-bound evidence exists.
+qaVerdict: DO NOT PROCEED
+authorizationBoundary: Read-only inspection only until explicitly changed.
+claimedVerdict: DO NOT PROCEED

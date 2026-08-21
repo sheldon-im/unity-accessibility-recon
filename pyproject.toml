@@ -1,0 +1,46 @@
+[project]
+name = "unity-accessibility-reconnaissance"
+version = "0.2.0"
+description = "Agent-neutral reconnaissance contracts for Unity screen-reader accessibility mods"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Sheldon" }]
+dependencies = [
+  "jsonschema>=4.23,<5",
+  "PyYAML>=6.0,<7",
+]
+
+[project.scripts]
+uar = "unity_accessibility_recon.cli:main"
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<9",
+]
+
+[build-system]
+requires = ["hatchling>=1.28,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.local",
+  "/docs/_local",
+  "/dist",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/unity_accessibility_recon"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"shared" = "unity_accessibility_recon/shared"
+"skills" = "unity_accessibility_recon/skills"
+"README.md" = "unity_accessibility_recon/README.md"
+"README.ko.md" = "unity_accessibility_recon/README.ko.md"
+"THIRD-PARTY-NOTICES.md" = "unity_accessibility_recon/THIRD-PARTY-NOTICES.md"
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

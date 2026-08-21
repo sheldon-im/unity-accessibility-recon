@@ -1,0 +1,66 @@
+schemaVersion: 1
+phases:
+  - id: G0-AUTHORIZATION
+    name_en: Authorization and feasibility
+    name_ko: 권한과 실행 가능성
+  - id: G1-BASELINE
+    name_en: Build and source baseline
+    name_ko: 빌드와 원본 기준선
+  - id: G2-EXTRACTION
+    name_en: Preserving extraction
+    name_ko: 원본 보존형 추출
+  - id: G3-STATIC-DISCOVERY
+    name_en: Static UI discovery
+    name_ko: 정적 UI 조사
+  - id: G4-LIFECYCLE-MAP
+    name_en: Whole-game lifecycle map
+    name_ko: 게임 전체 수명주기 지도
+  - id: G5-RUNTIME-COVERAGE
+    name_en: Runtime owner and control coverage
+    name_ko: 런타임 소유자와 컨트롤 커버리지
+  - id: G6-INPUT-POSTCONDITION
+    name_en: Native input and postconditions
+    name_ko: 네이티브 입력과 후조건
+  - id: G7-FIRST-SLICE-READINESS
+    name_en: First accessibility slice readiness
+    name_ko: 첫 접근성 슬라이스 준비도
+
+claimGrades:
+  - SOURCE-IDENTIFIED
+  - STATIC-CONFIRMED
+  - RUNTIME-OBSERVED
+  - PHYSICAL-INPUT-PROVEN
+  - POSTCONDITION-PROVEN
+  - SPEECH-DISPATCH-PROVEN
+  - NVDA-MANUAL-CONFIRMED
+  - OPEN / DYNAMIC-UNVERIFIED
+
+coverageGates:
+  - id: STATIC-MAPPED
+    field: staticMapped
+  - id: RUNTIME-OWNER-OBSERVED
+    field: runtimeOwnerObserved
+  - id: ACTIVE-CONTROLS-INVENTORIED
+    field: activeControlsInventoried
+  - id: SEMANTIC-MODELED
+    field: semanticModeled
+  - id: NATIVE-FOCUS-PROVEN
+    field: nativeFocusProven
+  - id: NATIVE-ACTION-POSTCONDITION-PROVEN
+    field: nativeActionPostconditionProven
+  - id: NVDA-MANUAL-CONFIRMED
+    field: nvdaManualConfirmed
+  - id: COVERAGE-CLOSED
+    field: coverageClosed
+
+privacyClasses:
+  - public
+  - local
+  - sensitive
+  - proprietary
+  - unknown
+
+verdicts:
+  - PROCEED
+  - PROCEED WITH TODOs
+  - DO NOT PROCEED

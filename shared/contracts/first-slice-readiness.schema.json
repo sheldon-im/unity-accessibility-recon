@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/uar/first-slice-readiness.schema.json",
+  "title": "First accessibility slice readiness",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sliceId",
+    "buildFingerprintId",
+    "artifactStatus",
+    "runtimePlan",
+    "gaps",
+    "qaVerdict",
+    "authorizationBoundary",
+    "claimedVerdict"
+  ],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "sliceId": {"type": "string", "pattern": "^SLICE-[A-Z0-9-]+$"},
+    "buildFingerprintId": {"type": "string", "minLength": 3},
+    "artifactStatus": {
+      "type": "object",
+      "required": [
+        "authorization",
+        "buildFingerprint",
+        "sourceManifest",
+        "extractionCoverage",
+        "staticUiLedger",
+        "surfaceLifecycleMatrix"
+      ],
+      "properties": {
+        "authorization": {"enum": ["CLOSED", "BLOCKED"]},
+        "buildFingerprint": {"enum": ["VALID", "BLOCKED"]},
+        "sourceManifest": {"enum": ["VALID", "BLOCKED"]},
+        "extractionCoverage": {"enum": ["DUMP-READY", "DUMP-PARTIAL", "BLOCKED"]},
+        "staticUiLedger": {"enum": ["WHOLE-GAME-MAPPED", "PARTIAL", "BLOCKED"]},
+        "surfaceLifecycleMatrix": {"enum": ["WHOLE-GAME-MAPPED", "PARTIAL", "BLOCKED"]}
+      },
+      "additionalProperties": false
+    },
+    "runtimePlan": {
+      "type": "object",
+      "required": [
+        "ownerTestable",
+        "inputTestable",
+        "privacyDefined",
+        "preservationDefined",
+        "deploymentRollbackDefined"
+      ],
+      "properties": {
+        "ownerTestable": {"type": "boolean"},
+        "inputTestable": {"type": "boolean"},
+        "privacyDefined": {"type": "boolean"},
+        "preservationDefined": {"type": "boolean"},
+        "deploymentRollbackDefined": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "gapId",
+          "claimGrade",
+          "appliesToSlice",
+          "blocking",
+          "guard",
+          "reOpenTrigger"
+        ],
+        "properties": {
+          "gapId": {"type": "string", "pattern": "^GAP-[A-Z0-9-]+$"},
+          "claimGrade": {
+            "enum": [
+              "SOURCE-IDENTIFIED",
+              "STATIC-CONFIRMED",
+              "RUNTIME-OBSERVED",
+              "PHYSICAL-INPUT-PROVEN",
+              "POSTCONDITION-PROVEN",
+              "SPEECH-DISPATCH-PROVEN",
+              "NVDA-MANUAL-CONFIRMED",
+              "OPEN / DYNAMIC-UNVERIFIED"
+            ]
+          },
+          "appliesToSlice": {"type": "boolean"},
+          "blocking": {"type": "boolean"},
+          "guard": {"type": "string", "minLength": 3},
+          "reOpenTrigger": {"type": "string", "minLength": 3}
+        },
+        "additionalProperties": false
+      }
+    },
+    "qaVerdict": {"enum": ["PROCEED", "PROCEED WITH TODOs", "DO NOT PROCEED"]},
+    "authorizationBoundary": {"type": "string", "minLength": 10},
+    "claimedVerdict": {"enum": ["PROCEED", "PROCEED WITH TODOs", "DO NOT PROCEED"]}
+  },
+  "additionalProperties": false
+}

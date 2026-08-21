@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/uar/work-slice-ledger.schema.json",
+  "title": "Agent-owned work slice ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "slices"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "slices": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["workId", "intent", "userVisibleOutcome", "prerequisites", "ownedFiles", "excludedFiles", "behaviorContract", "verification", "rollbackOrRevertBoundary", "evidenceRequired", "commitCandidate", "qaTriggers", "authorizationRequired", "status"],
+        "properties": {
+          "workId": { "type": "string", "pattern": "^WORK-[A-Z0-9-]+$" },
+          "intent": { "type": "string", "minLength": 1 },
+          "userVisibleOutcome": { "type": "string", "minLength": 1 },
+          "prerequisites": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "ownedFiles": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^(?!/|[A-Za-z]:[\\\\/]).+" }, "uniqueItems": true },
+          "excludedFiles": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "behaviorContract": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "verification": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "rollbackOrRevertBoundary": { "type": "string", "minLength": 1 },
+          "evidenceRequired": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+          "commitCandidate": { "type": "string", "minLength": 1 },
+          "qaTriggers": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "authorizationRequired": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "status": { "enum": ["pending", "in-progress", "blocked", "verified", "committed"] }
+        }
+      }
+    }
+  }
+}

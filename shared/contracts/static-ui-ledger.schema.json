@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/uar/static-ui-ledger.schema.json",
+  "title": "Build-bound static UI discovery ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "buildFingerprintId", "records"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "buildFingerprintId": { "type": "string", "minLength": 3 },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "candidateId",
+          "sourceKind",
+          "sourceIdentity",
+          "hierarchyIdentity",
+          "ownerType",
+          "controlFamily",
+          "labelSource",
+          "localizationKey",
+          "callbackEvidence",
+          "inputEvidence",
+          "dynamicFlags",
+          "confidence",
+          "privacyClass",
+          "claimGrade",
+          "disposition",
+          "dispositionReason",
+          "evidenceRefs",
+          "gapId"
+        ],
+        "properties": {
+          "candidateId": { "type": "string", "pattern": "^UI-[A-Z0-9-]+$" },
+          "sourceKind": {
+            "enum": [
+              "scene",
+              "prefab",
+              "resource",
+              "asset-bundle",
+              "addressable",
+              "managed-code",
+              "dynamic-hint",
+              "unknown"
+            ]
+          },
+          "sourceIdentity": { "type": "string", "minLength": 1 },
+          "hierarchyIdentity": { "type": "string", "minLength": 1 },
+          "ownerType": { "type": "string", "minLength": 1 },
+          "controlFamily": { "type": "string", "minLength": 1 },
+          "labelSource": {
+            "enum": [
+              "game-localization",
+              "rendered-text",
+              "semantic-owner",
+              "associated-label",
+              "diagnostic-object-name",
+              "unresolved",
+              "none"
+            ]
+          },
+          "localizationKey": { "type": ["string", "null"] },
+          "callbackEvidence": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "inputEvidence": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "dynamicFlags": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "inactive",
+                "template",
+                "pooled",
+                "dynamically-generated",
+                "pointer-only",
+                "unresolved-script",
+                "none"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "confidence": { "enum": ["high", "medium", "low", "unresolved"] },
+          "privacyClass": {
+            "enum": ["public", "local", "sensitive", "proprietary", "unknown"]
+          },
+          "claimGrade": {
+            "enum": ["SOURCE-IDENTIFIED", "STATIC-CONFIRMED", "OPEN / DYNAMIC-UNVERIFIED"]
+          },
+          "disposition": { "enum": ["semantic-candidate", "excluded", "gap"] },
+          "dispositionReason": { "type": "string", "minLength": 1 },
+          "evidenceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "gapId": {
+            "type": ["string", "null"],
+            "pattern": "^GAP-[A-Z0-9-]+$"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "disposition": { "const": "gap" } },
+              "required": ["disposition"]
+            },
+            "then": {
+              "properties": { "gapId": { "type": "string" } }
+            },
+            "else": {
+              "properties": { "gapId": { "type": "null" } }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

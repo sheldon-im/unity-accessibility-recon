@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "buildFingerprintId": "synthetic-100-unity2022-mono-windows-x64",
+  "declaredScope": "Synthetic managed-code reconnaissance with one bounded parser gap",
+  "families": [
+    {
+      "familyId": "managed-assemblies",
+      "discovered": 42,
+      "extracted": 42,
+      "excluded": 0,
+      "unsupported": 0,
+      "failed": 0,
+      "notPresent": 0,
+      "blockingGaps": []
+    },
+    {
+      "familyId": "il2cpp-binary-metadata",
+      "discovered": 0,
+      "extracted": 0,
+      "excluded": 0,
+      "unsupported": 0,
+      "failed": 0,
+      "notPresent": 0,
+      "blockingGaps": []
+    },
+    {
+      "familyId": "other",
+      "discovered": 1,
+      "extracted": 0,
+      "excluded": 0,
+      "unsupported": 0,
+      "failed": 1,
+      "notPresent": 0,
+      "blockingGaps": []
+    }
+  ],
+  "firstSliceFamilies": ["managed-assemblies"],
+  "replay": {
+    "performed": true,
+    "equivalent": true,
+    "canonicalDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }
+}

@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.ruff_cache/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Local evidence and proprietary data
+artifacts/
+.local/
+runtime/
+raw/

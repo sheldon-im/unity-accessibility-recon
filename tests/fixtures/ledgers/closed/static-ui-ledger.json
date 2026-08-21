@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "buildFingerprintId": "synthetic-100-unity2022-mono-windows-x64",
+  "records": [
+    {
+      "candidateId": "UI-STARTUP-CONTINUE",
+      "sourceKind": "scene",
+      "sourceIdentity": "Assets/Scenes/Startup.unity",
+      "hierarchyIdentity": "StartupPanel/ContinueButton",
+      "ownerType": "StartupPanel",
+      "controlFamily": "button",
+      "labelSource": "game-localization",
+      "localizationKey": "ui.continue",
+      "callbackEvidence": ["StartupPanel.Continue"],
+      "inputEvidence": ["UI/Submit"],
+      "dynamicFlags": ["none"],
+      "confidence": "high",
+      "privacyClass": "public",
+      "claimGrade": "STATIC-CONFIRMED",
+      "disposition": "semantic-candidate",
+      "dispositionReason": "Required startup action candidate.",
+      "evidenceRefs": ["managed:StartupPanel.Continue", "scene:Startup/ContinueButton"],
+      "gapId": null
+    },
+    {
+      "candidateId": "UI-TITLE-OPTIONS",
+      "sourceKind": "scene",
+      "sourceIdentity": "Assets/Scenes/Title.unity",
+      "hierarchyIdentity": "TitlePanel/OptionsButton",
+      "ownerType": "TitlePanel",
+      "controlFamily": "button",
+      "labelSource": "game-localization",
+      "localizationKey": "ui.options",
+      "callbackEvidence": ["TitlePanel.OpenOptions"],
+      "inputEvidence": ["UI/Submit"],
+      "dynamicFlags": ["none"],
+      "confidence": "high",
+      "privacyClass": "public",
+      "claimGrade": "STATIC-CONFIRMED",
+      "disposition": "semantic-candidate",
+      "dispositionReason": "Required title action candidate.",
+      "evidenceRefs": ["managed:TitlePanel.OpenOptions", "scene:Title/OptionsButton"],
+      "gapId": null
+    }
+  ]
+}

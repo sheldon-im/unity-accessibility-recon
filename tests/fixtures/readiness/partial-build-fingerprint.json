@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "fingerprintId": "synthetic-100-unity2022-mono-windows-x64",
+  "productId": "synthetic-game",
+  "buildId": "100",
+  "productVersion": "1.0.0",
+  "unityVersion": "2022.3.60f1",
+  "scriptingBackend": "Mono",
+  "architecture": "Windows-x64",
+  "loaderCandidate": "BepInEx 5",
+  "keySourceHashes": [
+    {
+      "relativePath": "Synthetic_Data/Managed/Assembly-CSharp.dll",
+      "size": 1024,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "sourceManifestDigest": "9253646baea86372d72a72e28ff1d0cc6f33a10ff29be64688125f1455e10d09"
+}

@@ -1,0 +1,3 @@
+surfaceId,buildFingerprintId,staticMapped,runtimeOwnerObserved,activeControlsInventoried,semanticModeled,nativeFocusProven,nativeActionPostconditionProven,nvdaManualConfirmed,coverageClosed,evidenceRefs,exclusionOrGap
+SURFACE-STARTUP,synthetic-100-unity2022-mono-windows-x64,true,false,false,false,false,false,false,false,static-ledger:startup,GAP-RUNTIME-STARTUP
+SURFACE-TITLE,synthetic-100-unity2022-mono-windows-x64,true,false,false,false,false,false,false,false,static-ledger:title,GAP-RUNTIME-TITLE

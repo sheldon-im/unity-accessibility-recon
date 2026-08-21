@@ -1,0 +1,4 @@
+gapId,buildFingerprintId,surfaceId,claimGrade,userImpact,currentMitigation,nextEvidence,owner,blocking,reopenTrigger,status
+GAP-PARSER-BOUNDED,synthetic-100-unity2022-mono-windows-x64,GLOBAL,OPEN / DYNAMIC-UNVERIFIED,Optional source family is not extracted,Exclude that family from the startup-title slice,Use a compatible parser or bounded runtime observation,agent,false,The optional family enters an implementation slice,open
+GAP-RUNTIME-STARTUP,synthetic-100-unity2022-mono-windows-x64,SURFACE-STARTUP,OPEN / DYNAMIC-UNVERIFIED,Startup owner is not runtime-proven,Fail closed before player-facing implementation,Observe top owner and initial focus,agent,false,Runtime authorization granted,open
+GAP-RUNTIME-TITLE,synthetic-100-unity2022-mono-windows-x64,SURFACE-TITLE,OPEN / DYNAMIC-UNVERIFIED,Title owner is not runtime-proven,Fail closed before player-facing implementation,Observe top owner and child restore,agent,false,Runtime authorization granted,open

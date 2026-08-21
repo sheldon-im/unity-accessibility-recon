@@ -1,0 +1,29 @@
+schemaVersion: 1
+slices:
+  - workId: WORK-FOUNDATION-CONTRACTS
+    intent: Establish build-bound reconnaissance contracts.
+    userVisibleOutcome: Agents can validate source identity and extraction evidence before implementation.
+    prerequisites:
+      - G0-AUTHORIZATION
+    ownedFiles:
+      - shared/contracts/
+      - tests/fixtures/
+    excludedFiles:
+      - raw game data
+      - personal saves and profiles
+      - unrelated working-tree changes
+    behaviorContract:
+      - mixed-build artifacts fail closed
+      - every declared source family receives a disposition
+    verification:
+      - uv run pytest
+      - git diff --check
+    rollbackOrRevertBoundary: Revert the contract and its fixtures together.
+    evidenceRequired:
+      - schema validation output
+      - negative fixture failure
+    commitCandidate: "contracts: add build and evidence schemas"
+    qaTriggers:
+      - persistent schema contract
+    authorizationRequired: []
+    status: pending

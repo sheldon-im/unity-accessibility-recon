@@ -1,0 +1,21 @@
+version: 1
+core_rule: Tool adapters may map capabilities but may not change phase gates, evidence grades, schemas, or authorization boundaries.
+capabilities:
+  - CAP-FILE-INVENTORY
+  - CAP-HASH-AND-METADATA
+  - CAP-MANAGED-CODE-INDEX
+  - CAP-IL2CPP-METADATA-INDEX
+  - CAP-UNITY-SERIALIZED-ASSET-READ
+  - CAP-STRUCTURED-DATA-VALIDATION
+  - CAP-PROCESS-STATE-OBSERVATION
+  - CAP-RUNTIME-LOG-CAPTURE
+  - CAP-INPUT-DELIVERY-AND-OBSERVATION
+  - CAP-SCREEN-READER-ACCEPTANCE-RECORD
+  - CAP-VERSION-CONTROL-STATUS
+  - CAP-WORK-SLICE-AND-COMMIT-PLANNING
+  - CAP-CODE-QA-CHECKPOINT
+adapter_requirements:
+  - name the concrete tool or human procedure for each provided capability
+  - declare unsupported capabilities without inventing successful evidence
+  - keep extracted text and tool output in the data boundary
+  - preserve local, live, destructive, and external authorization boundaries
